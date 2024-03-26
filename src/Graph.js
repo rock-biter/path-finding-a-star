@@ -55,7 +55,7 @@ export default class Graph {
 		const g = this.getGCost(to, from)
 		const h = this.getHCost(to, end)
 		// console.log(g, h)
-		return g + h
+		return g + h + h * 0.001
 	}
 
 	showPath(end) {
@@ -113,7 +113,7 @@ export default class Graph {
 					node.f = newFCost
 					node.g = this.getGCost(node, current)
 					node.h = this.getHCost(node, end)
-					node.mesh.material.color.set('mediumpurple')
+					// node.mesh.material.color.set('mediumpurple')
 					node.parentNode = current
 					// alert(node.f, node.g, node.h)
 					if (toAdd) {
@@ -170,7 +170,7 @@ export default class Graph {
 					node.f = newFCost
 					node.g = this.getGCost(node, current)
 					node.h = this.getHCost(node, end)
-					node.mesh.material.color.set('mediumpurple')
+					// node.mesh.material.color.set('mediumpurple')
 					node.parentNode = current
 					// alert(node.f, node.g, node.h)
 					if (toAdd) {
