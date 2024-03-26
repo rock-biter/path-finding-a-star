@@ -76,7 +76,7 @@ const obstacles = [
 	163, 183, 203, 223, 243, 263, 330, 310, 290, 350, 270, 250, 230,
 ]
 
-const size = 20
+const size = 100
 
 for (let i = 0; i < size; i++) {
 	for (let j = 0; j < size; j++) {
@@ -89,7 +89,7 @@ for (let i = 0; i < size; i++) {
 		tile.position.set(j - size * 0.5, 0, i - size * 0.5)
 
 		const index = map.nodes.length
-		const walkable = !obstacles.includes(index)
+		const walkable = !(i > 20 && i < size - 20 && j > 20 && j < size - 20) //!obstacles.includes(index)
 
 		const node = new Node(tile, i, j, walkable)
 		map.addVertex(node)
@@ -180,13 +180,26 @@ map.nodes.forEach((node, i) => {
 // 	console.log(node)
 // })
 
-const start = map.nodes[20]
-const end = map.nodes[399]
+const start = map.nodes[0]
+const end = map.nodes[size ** 2 - 1]
 
 // start.mesh.material.color.set('green')
 // end.mesh.material.color.set('tomato')
+console.log('with array')
+for (let i = 0; i < 10; i++) {
+	console.time()
+	map.findPath(start, end)
+	console.timeEnd()
+	map.nodes.forEach((el) => el.reset())
+}
 
-map.findPath(start, end)
+console.log('with heap')
+for (let i = 0; i < 10; i++) {
+	console.time()
+	map.findPathHeap(start, end)
+	console.timeEnd()
+	map.nodes.forEach((el) => el.reset())
+}
 
 start.mesh.material.color.set('lightgreen')
 end.mesh.material.color.set('tomato')

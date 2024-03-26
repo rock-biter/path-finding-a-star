@@ -1,5 +1,6 @@
 import { Vector2 } from 'three'
 import Node from './Node'
+import MinHeap from './MinHeap'
 const V = new Vector2()
 
 export default class Graph {
@@ -71,7 +72,7 @@ export default class Graph {
 	 */
 	findPath(start, end) {
 		const frontier = []
-		const closed = []
+		// const closed = []
 		frontier.push(start)
 
 		start.g = this.getGCost(start)
@@ -79,7 +80,7 @@ export default class Graph {
 		start.f = this.getFCost(start, undefined, end)
 		start.parentNode = null
 
-		console.log(frontier)
+		// console.log(frontier)
 
 		while (frontier.length) {
 			frontier.sort((nodeA, nodeB) => {
@@ -92,29 +93,88 @@ export default class Graph {
 				}
 			})
 			const current = frontier.shift()
-			closed.push(current)
+			// closed.push(current)
+			current.visited = true
 			// console.log(current)
 
 			if (current === end) {
-				console.log('Percorso trovato')
+				// console.log('Percorso trovato')
 				this.showPath(end)
 				break
 			}
 
 			current.neighbors.forEach((node) => {
-				console.log(node.walkable)
-				if (!node.walkable || closed.includes(node)) return
+				// console.log(node.walkable)
+				if (!node.walkable || node.visited) return
 
 				const newFCost = this.getFCost(node, current, end)
 				if (node.f === undefined || newFCost < node.f) {
+					const toAdd = node.f === undefined
 					node.f = newFCost
 					node.g = this.getGCost(node, current)
 					node.h = this.getHCost(node, end)
 					node.mesh.material.color.set('mediumpurple')
 					node.parentNode = current
 					// alert(node.f, node.g, node.h)
-					if (!frontier.includes(node)) {
+					if (toAdd) {
 						frontier.push(node)
+					}
+				}
+			})
+		}
+	}
+
+	/**
+	 * A* search
+	 */
+	findPathHeap(start, end) {
+		const frontier = new MinHeap()
+		// const closed = []
+		frontier.add(start)
+
+		start.g = this.getGCost(start)
+		start.h = this.getHCost(start, end)
+		start.f = this.getFCost(start, undefined, end)
+		start.parentNode = null
+
+		// console.log(frontier)
+
+		while (frontier.size) {
+			// frontier.sort((nodeA, nodeB) => {
+			// 	if (nodeA.f < nodeB.f) {
+			// 		return -1
+			// 	} else if (nodeA.f > nodeB.f) {
+			// 		return 1
+			// 	} else {
+			// 		return nodeA.h - nodeB.h
+			// 	}
+			// })
+			const current = frontier.get()
+			// closed.push(current)
+			current.visited = true
+			// console.log(current)
+
+			if (current === end) {
+				// console.log('Percorso trovato')
+				this.showPath(end)
+				break
+			}
+
+			current.neighbors.forEach((node) => {
+				// console.log(node.walkable)
+				if (!node.walkable || node.visited) return
+
+				const newFCost = this.getFCost(node, current, end)
+				if (node.f === undefined || newFCost < node.f) {
+					const toAdd = node.f === undefined
+					node.f = newFCost
+					node.g = this.getGCost(node, current)
+					node.h = this.getHCost(node, end)
+					node.mesh.material.color.set('mediumpurple')
+					node.parentNode = current
+					// alert(node.f, node.g, node.h)
+					if (toAdd) {
+						frontier.add(node)
 					}
 				}
 			})

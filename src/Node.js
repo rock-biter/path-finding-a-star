@@ -23,6 +23,14 @@ export default class Node {
 		}
 	}
 
+	reset() {
+		this.g = undefined
+		this.h = undefined
+		this.f = undefined
+		this.parentNode = undefined
+		this.visited = undefined
+	}
+
 	/**
 	 * Remove to node from neighbors
 	 * @param {Node} to
